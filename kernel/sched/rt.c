@@ -1605,8 +1605,7 @@ task_may_not_preempt(struct task_struct *task, int cpu)
 
 	return ((softirqs & LONG_SOFTIRQ_MASK) &&
 		(task == cpu_ksoftirqd || is_idle_task(task) ||
-		 (task_thread_info(task)->preempt_count
-		     & (HARDIRQ_MASK | SOFTIRQ_MASK))));
+		 (task_pc & (HARDIRQ_MASK | SOFTIRQ_MASK))));
 }
 
 static int
