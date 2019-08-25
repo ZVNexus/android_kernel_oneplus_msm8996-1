@@ -452,7 +452,6 @@ static void __cpufreq_interactive_timer(unsigned long data, bool is_notif)
 	unsigned long max_cpu;
 	int i, fcpu;
 	struct cpufreq_govinfo govinfo;
-	bool start_hyst = true;
 
 	if (!down_read_trylock(&ppol->enable_sem))
 		return;
