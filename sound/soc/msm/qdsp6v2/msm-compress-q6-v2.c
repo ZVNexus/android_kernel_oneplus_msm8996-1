@@ -85,6 +85,7 @@ const DECLARE_TLV_DB_LINEAR(msm_compr_vol_gain, 0,
 
 #define MAX_NUMBER_OF_STREAMS 2
 
+int gis_24bits = 0;
 struct msm_compr_gapless_state {
 	bool set_next_stream_id;
 	int32_t stream_opened[MAX_NUMBER_OF_STREAMS];
@@ -1119,6 +1120,11 @@ static int msm_compr_configure_dsp_for_playback
 		(codec_options->flac_dec.sample_size != 0))
 		bits_per_sample = codec_options->flac_dec.sample_size;
 
+	if (prtd->codec_param.codec.bit_rate == 24) {
+		bits_per_sample = 24;
+		gis_24bits = 1;
+	}
+
 	if (prtd->compr_passthr != LEGACY_PCM) {
 		ret = q6asm_open_write_compressed(ac, prtd->codec,
 						  prtd->compr_passthr);
@@ -1976,6 +1982,10 @@ static int msm_compr_trigger(struct snd_compr_stream *cstream, int cmd)
 	uint16_t bits_per_sample = 16;
 	union snd_codec_options *codec_options =
 		&(prtd->codec_param.codec.options);
+
+	if (prtd->codec_param.codec.bit_rate == 24) {
+		bits_per_sample = 24;
+	}
 
 	spin_lock_irqsave(&prtd->lock, flags);
 	if (atomic_read(&prtd->error)) {
